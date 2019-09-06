@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html ondragstart="return false"><!--元素-->
+	<head>
+		<meta charset="utf-8" />
+		<title></title>
+		<style type="text/css">
+			
+			
+			body{
+				margin: 0;padding: 0;
+				background: black;
+				overflow: hidden;
+				
+			}
+			
+			#perspeative{
+				perspective: 700px;/*景深*/
+				
+			}
+			
+			#tupian{
+				width: 150px;
+				height: 130px;
+				margin: 150px auto;
+				transform-style: preserve-3d;/*3d视角*/
+				transform: rotateX(-30deg) rotateY(0deg);/*3个方向*/
+				
+			}
+			img{
+				position: absolute;
+				width: 150px;
+				height: 130px;
+			}
+			
+			
+			
+		</style>
+	</head>
+	<body>
+		<div id="perspeative">
+			<div id="tupian">
+				<img src="img/w1.jpg" />
+				<img src="img/w2.jpg" />
+				<img src="img/w3.jpg" />
+				<img src="img/w4.jpg" />
+				<img src="img/w5.jpg" />
+				<img src="img/w6.jpg" />
+				<img src="img/w7.jpg" />
+				<img src="img/w8.jpg" />
+				<img src="img/w9.jpg" /> 
+				<img src="img/w10.jpg" />
+				<img src="img/w11.jpg" />
+			</div>
+		</div>
+		
+		<script>
+			var a = document.getElementsByTagName("img");
+			var oldX,oldY,ljsX= -30,ljsY= 0,chaiX,chaiY;
+			var deg = 360/a.length;
+			var tp = document.getElementById("tupian");
+			console.log(tp)
+//			在window加载后加载
+			window.onload=function(){Array.prototype.forEach.call(a,function(ele,ind){
+				
+				ele.style.transform="rotateY("+deg*ind+"deg) translateZ(350px)";
+//				1值过渡时间   1值 延时时间
+				ele.style.transition="2s "+(a.length-ind)/6+"s";
+			})}
+			
+			document.onmousedown=function(e){
+				var e = e||window.event;
+				console.log("按下")
+				
+				oldX = e.clientX;
+				oldY = e.clientY;
+					
+				console.log(e.clientX,e.clientY)
+				
+				this.onmousemove=function(e){
+					var e = e||window.event;	
+					console.log("按下并移动")
+					
+					var newX = e.clientX;
+						newY = e.clientY;
+					
+					chaiX = newX-oldX;
+					chaiY = newY-oldY;
+					
+					ljsX -= chaiY*0.2;//加等于必须连在一起
+					ljsY += chaiX*0.2;
+					
+					tp.style.transform="rotateX(" + ljsX + "deg) rotateY(" + ljsY + "deg)";
+					
+					oldX=newX;
+					oldY=newY;
+					console.log(chaiY,chaiX)
+					
+				}
+				this.onmouseup=function(e){
+					var e = e||window.event;
+//					清空onmousemove事件
+					this.onmousemove=null;
+					console.log("松开")
+					
+					var trmer=setInterval(function(){
+						
+						chaiY *= 0.95;//加等于必须连在一起
+						chaiX *= 0.95;
+						
+						ljsX -= chaiY*0.2;
+						ljsY += chaiX*0.2;
+						
+						tp.style.transform="rotateX(" + ljsX + "deg) rotateY(" + ljsY + "deg)";
+						
+						if( Math.abs(chaiY)<0.1 && Math.abs(chaiX)<0.1){
+							clearInterval(trmer);
+						}
+						
+					},10)
+					
+				}
+				
+			}
+			
+			
+			
+			
+		</script>
+			
+		
+		
+	</body>
+</html>
