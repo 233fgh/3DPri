@@ -21,7 +21,7 @@
 			#tupian{
 				width: 150px;
 				height: 130px;
-				margin: 150px auto;
+				margin: 800px auto;
 				transform-style: preserve-3d;/*3d视角*/
 				transform: rotateX(-30deg) rotateY(0deg);/*3个方向*/
 				
@@ -36,7 +36,7 @@
 			
 		</style>
 	</head>
-	<body>
+	<body class="width:100%;height:100%;">
 		<div id="perspeative">
 			<div id="tupian">
 				<img src="img/w1.jpg" />
@@ -61,7 +61,6 @@
 			console.log(tp)
 //			在window加载后加载
 			window.onload=function(){Array.prototype.forEach.call(a,function(ele,ind){
-				
 				ele.style.transform="rotateY("+deg*ind+"deg) translateZ(350px)";
 //				1值过渡时间   1值 延时时间
 				ele.style.transition="2s "+(a.length-ind)/6+"s";
@@ -122,7 +121,56 @@
 				
 			}
 			
+			// 在移动端的的时候触发
 			
+			document.addEventListener('touchstart',function(e){//触摸屏膜
+				if(e.touches.length = 1){
+					var e = e||window.event;
+					console.log("按下")
+					console.log(e)
+					
+					oldX = e.touches[0].clientX;
+					oldY = e.touches[0].clientY;
+					console.log(oldX,oldY)
+					this.addEventListener('touchmove',function(event){//触摸屏膜并移动
+						event.preventDefault();
+						var newX = event.touches[0].clientX;
+							newY = event.touches[0].clientY;
+						console.log(newX,newY)
+						chaiX = newX-oldX;
+						chaiY = newY-oldY;
+						
+						ljsX -= chaiY*0.2;//加等于必须连在一起
+						ljsY += chaiX*0.2;
+						console.log(ljsX,ljsY)
+						tp.style.transform="rotateX(" + ljsX + "deg) rotateY(" + ljsY + "deg)";
+						
+						oldX=newX;
+						oldY=newY;
+					});
+					
+					this.addEventListener('touchend',function(events){//触摸屏膜结束
+					events.preventDefault();
+					var events = events||window.event;
+					var trmer=setInterval(function(){
+						
+						chaiY *= 0.95;//加等于必须连在一起
+						chaiX *= 0.95;
+						
+						ljsX -= chaiY*0.2;
+						ljsY += chaiX*0.2;
+						console.log(ljsX,ljsY)
+						tp.style.transform="rotateX(" + ljsX + "deg) rotateY(" + ljsY + "deg)";
+						
+						if( Math.abs(chaiY)<0.1 && Math.abs(chaiX)<0.1){
+							clearInterval(trmer);
+						}
+						
+					},10)
+						
+					})		
+				}
+			})
 			
 			
 		</script>
